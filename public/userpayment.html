@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment - FlightReserve</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    /* Using consistent homepage styles */
+    :root {
+      --brand: #6f42c1;
+      --gradient: linear-gradient(135deg, #6f42c1, #a78bfa);
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --bg-soft: #f8f9fc;
+    }
+    body {
+      background-color: var(--bg-soft);
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+    }
+    
+    /* Navbar Styles */
+    .navbar {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .navbar-brand {
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: var(--gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* NEW: Style for the back button */
+    .btn-back {
+        font-weight: 600;
+        background: var(--gradient);
+        color: #fff !important;
+        border-radius: 30px;
+        padding: 8px 18px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: none;
+        transition: 0.3s;
+        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+    }
+    .btn-back:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(111, 66, 193, 0.35);
+    }
+
+
+    /* Page-specific styles */
+    header {
+      background: var(--gradient);
+      color: #fff;
+      padding: 2rem 1rem;
+      text-align: center;
+      border-radius: 28px;
+      margin-top: 80px;
+    }
+    .card {
+      margin-top: 2rem;
+      border: none;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .card-body h4 {
+        color: var(--brand);
+        font-weight: 700;
+        border-bottom: 2px solid #f1e8ff;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .btn-pay {
+      background: var(--gradient);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 30px;
+      border: none;
+      padding: 12px 30px;
+      transition: 0.3s;
+    }
+    .btn-pay:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(111, 66, 193, 0.4);
+    }
+    .profile-photo {
+        border: 4px solid var(--brand);
+        padding: 4px;
+        background-color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/homepage.html">FlightReserve</a>
+      <a href="#" id="backButton" class="btn-back ms-auto">
+        <i class="bi bi-arrow-left-circle"></i>
+        <span>Back</span>
+      </a>
+    </div>
+  </nav>
+
+  <header>
+    <h2>💳 Payment Confirmation</h2>
+    <p class="mb-0">Review your flight details and proceed to pay</p>
+  </header>
+
+  <div class="container pb-5">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <div class="row">
+                <div class="col-md-8">
+                    <h4><i class="bi bi-person-circle me-2"></i>Passenger Info</h4>
+                    <p class="mb-1"><strong>Full Name:</strong> <span id="fullName"></span></p>
+                    <p class="mb-1"><strong>Passport No:</strong> <span id="passportNo"></span></p>
+                    <p class="mb-1"><strong>Frequent Flyer No:</strong> <span id="frequentFlyer"></span></p>
+                    <p class="mb-1"><strong>Country:</strong> <span id="country"></span></p>
+                    <p class="mb-1"><strong>Phone:</strong> <span id="phone"></span></p>
+                </div>
+                <div class="col-md-4 text-center text-md-end">
+                    <img id="photo" src="" alt="Passenger Photo" width="120" height="120" style="object-fit: cover;" class="rounded-circle profile-photo">
+                </div>
+            </div>
+
+            <hr class="my-4">
+            <h4><i class="bi bi-airplane-fill me-2"></i>Flight Info</h4>
+            <p class="mb-1"><strong>Flight Number:</strong> <span id="flightNumber"></span></p>
+            <p class="mb-1"><strong>Route:</strong> <span id="aircraft"></span></p>
+            <p class="mb-1"><strong>Departure:</strong> <span id="departure"></span></p>
+            <p class="mb-1"><strong>Arrival:</strong> <span id="arrival"></span></p>
+            <p class="mb-1"><strong>Seats:</strong> <span id="seatNumbers" class="fw-bold text-success"></span></p>
+
+            <hr class="my-4">
+            <h4><i class="bi bi-wallet2 me-2"></i>Payment Summary</h4>
+            <p class="mb-1"><strong>Price per seat:</strong> ₹<span id="pricePerSeat">300</span></p>
+            <p class="mb-1"><strong>Total Seats:</strong> <span id="totalSeats"></span></p>
+            <p class="fs-4 fw-bold mt-2"><strong>Total Price:</strong> ₹<span id="totalPrice" class="text-primary"></span></p>
+
+            <div class="text-center mt-4">
+                <button id="payBtn" class="btn btn-pay">Proceed to Pay</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // SCRIPT has been cleaned up. The old dropdown logic is now removed.
+    const backendUrl = "http://localhost:3000";
+
+    const bookingInfo = JSON.parse(localStorage.getItem("pendingBooking"));
+    // This check should ideally redirect to the flights page if booking info is missing
+    if (!bookingInfo) {
+        alert("No booking info found. Please select seats first.");
+        window.location.href = "/userflights.html"; 
+    }
+
+    // Set the dynamic URL for the back button
+    const flightInstanceId = bookingInfo.flight_instance_id;
+    const routeName = bookingInfo.flight_route || "";
+    const backUrl = `userflightseat.html?instance_id=${flightInstanceId}&route=${routeName}`;
+    // A null check in case the button ID ever changes
+    const backButton = document.getElementById('backButton');
+    if (backButton) {
+      backButton.href = backUrl;
+    }
+
+    const userId = bookingInfo.user_id;
+
+    async function loadPaymentDetails() {
+        try {
+            const userRes = await fetch(`${backendUrl}/customers/read/${userId}`);
+            
+            if (!userRes.ok) throw new Error('Failed to fetch user details.');
+            const user = await userRes.json();
+
+            document.getElementById("fullName").textContent = user.full_name || 'N/A';
+            document.getElementById("passportNo").textContent = user.passport_no || 'N/A';
+            document.getElementById("frequentFlyer").textContent = user.frequent_flyer_no || 'N/A';
+            document.getElementById("country").textContent = user.country || 'N/A';
+            document.getElementById("phone").textContent = user.phone || 'N/A';
+
+            const photoUrl = `${backendUrl}/customers/photo/${userId}?t=${new Date().getTime()}`;
+            const photoRes = await fetch(photoUrl);
+            if (photoRes.ok) {
+                document.getElementById("photo").src = photoUrl;
+            } else {
+                document.getElementById("photo").src = "https://placehold.co/120x120/6f42c1/FFFFFF?text=Profile";
+            }
+
+            const flightRes = await fetch(`${backendUrl}/flightinstances/details/${flightInstanceId}`);
+            if (!flightRes.ok) throw new Error('Failed to fetch flight details.');
+            const flightInstance = await flightRes.json();
+
+            document.getElementById("flightNumber").textContent = flightInstance.flight_number;
+            document.getElementById("aircraft").textContent =
+                `${flightInstance.source_airport} → ${flightInstance.destination_airport}`;
+
+            const departure = new Date(flightInstance.scheduled_departure);
+            const arrival = new Date(flightInstance.scheduled_arrival);
+
+            document.getElementById("departure").textContent =
+                isNaN(departure) ? "N/A" : departure.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+
+            document.getElementById("arrival").textContent =
+                isNaN(arrival) ? "N/A" : arrival.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+
+            const seats = bookingInfo.seat_numbers.split(",");
+            document.getElementById("seatNumbers").textContent = seats.join(", ");
+
+            const totalSeats = seats.length;
+            const pricePerSeat = bookingInfo.price_per_seat;
+            document.getElementById("totalSeats").textContent = totalSeats;
+            document.getElementById("totalPrice").textContent = totalSeats * pricePerSeat;
+
+        } catch (err) {
+            console.error(err);
+            alert(`Failed to load payment details: ${err.message}`);
+        }
+    }
+
+    loadPaymentDetails();
+
+    document.getElementById("payBtn").addEventListener("click", async () => {
+        const confirmed = confirm(`Total amount ₹${document.getElementById("totalPrice").textContent}.\nProceed to pay?`);
+        if (!confirmed) return;
+
+        try {
+            const seatsArray = bookingInfo.seat_numbers.split(",");
+            const bookingData = {
+                user_id: userId,
+                flight_instance_id: flightInstanceId,
+                seat_numbers: seatsArray,
+                status: "confirmed",
+            };
+
+            const res = await fetch(`${backendUrl}/bookings/create`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(bookingData)
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || "Booking failed on the server.");
+            }
+
+            const booking = await res.json();
+
+            alert(`🎟️ Booking confirmed! Your PNR: ${booking.pnr}`);
+            localStorage.removeItem("pendingBooking");
+            window.location.href = "/userflights.html";
+
+        } catch (err) {
+            console.error(err);
+            alert(`Error completing booking: ${err.message}`);
+        }
+    });
+
+</script>
+</body>
+</html>

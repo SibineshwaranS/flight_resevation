@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>My Bookings - FlightReserve</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --brand: #6f42c1;
+            --gradient: linear-gradient(135deg, #6f42c1, #a78bfa);
+            --ink: #1f2937;
+            --muted: #6b7280;
+            --bg-soft: #f8f9fc;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-soft);
+            color: var(--ink);
+        }
+        .header-bar {
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background: rgba(248, 249, 252, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1030;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .navbar-brand {
+            font-weight: 800; font-size: 1.6rem; background: var(--gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; color: transparent;
+        }
+        .main-content {
+            padding-top: 100px;
+            padding-bottom: 80px;
+        }
+        .filter-controls {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.07);
+        }
+        .nav-tabs .nav-link {
+            font-weight: 600; color: var(--muted); border-radius: 8px;
+            border: 2px solid transparent;
+        }
+        .nav-tabs .nav-link.active {
+            color: var(--brand);
+            background-color: #f1e8ff;
+            border-color: #dcd1f3;
+        }
+        .booking-card {
+            background: #fff; border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: none; transition: all 0.3s ease;
+        }
+        .booking-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(111,66,193,0.1);
+        }
+        .card-header {
+            background: var(--gradient); color: #fff;
+            border-radius: 16px 16px 0 0 !important;
+        }
+        .card-footer {
+            background-color: #f9fafb;
+            border-radius: 0 0 16px 16px !important;
+        }
+        .pnr-code {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 700; letter-spacing: 2px;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px; border-radius: 6px;
+        }
+        .flight-path {
+            display: flex; align-items: center;
+            font-weight: 600; font-size: 1.2rem;
+        }
+        .flight-path .bi-airplane-fill {
+            margin: 0 1rem; color: var(--brand);
+        }
+        .details-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        .detail-item strong {
+            display: block; font-size: 0.9rem; color: var(--muted);
+            margin-bottom: 4px;
+        }
+        /* Style for selectable flight items in modal */
+        .available-flight-item {
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .available-flight-item:hover {
+            background-color: #f1e8ff;
+        }
+        .btn-back {
+        font-weight: 600;
+        background: var(--gradient);
+        color: #fff !important;
+        border-radius: 30px;
+        padding: 8px 18px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: none;
+        transition: 0.3s;
+        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+    }
+    .btn-back:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(111, 66, 193, 0.35);
+    }
+
+    </style>
+</head>
+<body>
+
+<header class="header-bar sticky-top">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a class="navbar-brand" href="/homepage.html">FlightReserve</a>
+        <button class="btn-back" onclick="goBack()">
+            <i class="bi bi-arrow-left-circle"></i>
+            <span>Back</span>
+        </button>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <h1 class="fw-bold mb-4">My Bookings</h1>
+
+        <div class="filter-controls mb-5">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-5">
+                    <ul class="nav nav-tabs" id="bookingTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="current-tab" type="button">Current Bookings</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="past-tab" type="button">Past Bookings</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <input type="date" id="dateFilter" class="form-control">
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button class="btn btn-primary w-100" id="applyFilterBtn">Filter by Date</button>
+                    <button class="btn btn-outline-secondary" id="clearFilterBtn" title="Clear Filter">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="bookingsContainer">
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Fetching your bookings...</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal fade" id="rescheduleModal" tabindex="-1" aria-labelledby="rescheduleModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rescheduleModalTitle">Reschedule Flight</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="rescheduleModalBody">
+                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary d-none" id="confirmRescheduleBtn">Confirm & Pay</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function goBack() {
+    window.history.back();
+}
+document.addEventListener("DOMContentLoaded", () => {
+    const bookingsContainer = document.getElementById("bookingsContainer");
+    const currentTab = document.getElementById("current-tab");
+    const pastTab = document.getElementById("past-tab");
+    const dateFilterInput = document.getElementById("dateFilter");
+    const applyFilterBtn = document.getElementById("applyFilterBtn");
+    const clearFilterBtn = document.getElementById("clearFilterBtn");
+
+    // Modal elements
+    const rescheduleModal = new bootstrap.Modal(document.getElementById('rescheduleModal'));
+    const rescheduleModalBody = document.getElementById('rescheduleModalBody');
+    const rescheduleModalTitle = document.getElementById('rescheduleModalTitle');
+    const confirmRescheduleBtn = document.getElementById('confirmRescheduleBtn');
+    let currentRescheduleData = {};
+
+    let allBookings = [];
+    let userId = null;
+    const backendUrl = "http://localhost:3000";
+
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+        userId = JSON.parse(storedUser).id;
+        loadBookings();
+    } else {
+        bookingsContainer.innerHTML = `<div class="alert alert-warning text-center">Please <a href="/login.html">log in</a> to view your bookings.</div>`;
+    }
+
+    async function loadBookings() {
+        showLoadingState();
+        try {
+            const res = await fetch(`${backendUrl}/bookings/user/${userId}`);
+            if (!res.ok) throw new Error("Failed to fetch bookings");
+            allBookings = await res.json();
+            filterAndRenderBookings('current');
+        } catch (err) {
+            console.error(err);
+            bookingsContainer.innerHTML = `<div class="alert alert-danger">Error loading your bookings. Please try again later.</div>`;
+        }
+    }
+
+    function renderBookings(bookingsToRender) {
+        bookingsContainer.innerHTML = "";
+        if (bookingsToRender.length === 0) {
+            bookingsContainer.innerHTML = `<div class="text-center p-5"><i class="bi bi-journal-x fs-1 text-muted"></i><h4 class="mt-3">No Bookings Found</h4><p class="text-muted">There are no bookings that match your criteria.</p></div>`;
+            return;
+        }
+
+        bookingsToRender.forEach(booking => {
+            const departureTime = new Date(booking.departure_time);
+            const arrivalTime = new Date(booking.arrival_time);
+            const bookingDate = new Date(booking.booking_date);
+            const statusClass = booking.status.toLowerCase() === 'confirmed' ? 'success' : 'secondary';
+            const statusText = booking.status.toUpperCase();
+            
+            const isCancelled = statusText === 'CANCELLED' || statusText === 'RESCHEDULED';
+            const isPast = departureTime < new Date();
+            const actionsDisabled = isCancelled || isPast;
+
+            const cardHTML = `
+            <div class="card booking-card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div><strong>PNR:</strong> <span class="pnr-code">${booking.pnr}</span></div>
+                    <span class="badge bg-${statusClass}">${statusText}</span>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <small class="text-muted">${booking.airline} - ${booking.flight_number}</small>
+                            <div class="flight-path my-2">
+                                <span>${booking.departure_city} (${booking.departure_iata})</span>
+                                <i class="bi bi-airplane-fill"></i>
+                                <span>${booking.arrival_city} (${booking.arrival_iata})</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end"><small class="text-muted">Booked On: ${bookingDate.toLocaleDateString()}</small></div>
+                    </div>
+                    <hr>
+                    <div class="details-grid">
+                        <div class="detail-item"><strong>Passenger</strong><p class="mb-0">${booking.full_name || 'N/A'}</p></div>
+                        <div class="detail-item"><strong>Seats</strong><p class="mb-0">${booking.seat_numbers}</p></div>
+                        <div class="detail-item"><strong>Departure</strong><p class="mb-0">${departureTime.toLocaleString()}</p></div>
+                        <div class="detail-item"><strong>Arrival</strong><p class="mb-0">${arrivalTime.toLocaleString()}</p></div>
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <button class="btn btn-sm btn-outline-secondary me-2 btn-reschedule" data-booking-id="${booking.booking_id}" ${actionsDisabled ? 'disabled' : ''}>
+                        <i class="bi bi-calendar-event me-1"></i> Reschedule
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger me-2 btn-cancel" data-booking-id="${booking.booking_id}" ${actionsDisabled ? 'disabled' : ''}>
+                        <i class="bi bi-x-circle me-1"></i> Cancel
+                    </button>
+                    <a href="${backendUrl}/bookings/ticket/${booking.booking_id}" target="_blank" class="btn btn-sm btn-primary">
+                        <i class="bi bi-download me-1"></i> Download e-Ticket
+                    </a>
+                </div>
+            </div>`;
+            bookingsContainer.innerHTML += cardHTML;
+        });
+    }
+
+    function showLoadingState() {
+        bookingsContainer.innerHTML = `<div class="text-center p-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Fetching your bookings...</p></div>`;
+    }
+
+    async function handleCancelBooking(bookingId) {
+        if (!confirm("Are you sure you want to cancel this booking? This action cannot be undone.")) {
+            return;
+        }
+        try {
+            const res = await fetch(`${backendUrl}/bookings/cancel/${bookingId}`, { method: 'PUT' });
+            if (!res.ok) {
+                const errData = await res.json();
+                throw new Error(errData.error || "Cancellation failed.");
+            }
+            alert("Booking cancelled successfully.");
+            loadBookings();
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        }
+    }
+
+    function filterAndRenderBookings(type) {
+        const now = new Date();
+        let filtered = [];
+        if (type === 'current') {
+            filtered = allBookings.filter(b => new Date(b.departure_time) >= now);
+            currentTab.classList.add('active'); pastTab.classList.remove('active');
+        } else if (type === 'past') {
+            filtered = allBookings.filter(b => new Date(b.departure_time) < now);
+            pastTab.classList.add('active'); currentTab.classList.remove('active');
+        } else if (type === 'date') {
+            const selectedDate = dateFilterInput.value;
+            if (!selectedDate) {
+                alert("Please select a date to filter by.");
+                return;
+            };
+            filtered = allBookings.filter(b => new Date(b.departure_time).toISOString().split('T')[0] === selectedDate);
+        }
+        renderBookings(filtered);
+    }
+    
+    // --- Reschedule Logic ---
+
+    async function handleRescheduleClick(bookingId) {
+        const booking = allBookings.find(b => b.booking_id == bookingId);
+        currentRescheduleData = { bookingId };
+        rescheduleModalTitle.textContent = `Reschedule PNR: ${booking.pnr}`;
+        rescheduleModalBody.innerHTML = `
+            <h5>Step 1: Select New Departure Date</h5>
+            <p>Your current flight from <strong>${booking.departure_city}</strong> to <strong>${booking.arrival_city}</strong> is on ${new Date(booking.departure_time).toLocaleDateString()}.</p>
+            <div class="input-group">
+                <input type="date" id="newDepartureDate" class="form-control" min="${new Date().toISOString().split('T')[0]}">
+                <button class="btn btn-primary" id="findFlightsBtn">Find Flights</button>
+            </div>
+            <div id="availableFlightsContainer" class="mt-4"></div>
+        `;
+        confirmRescheduleBtn.classList.add('d-none'); // Hide confirm button initially
+        rescheduleModal.show();
+    }
+
+    async function findAvailableFlights(bookingId, newDate) {
+        const container = document.getElementById('availableFlightsContainer');
+        container.innerHTML = `<div class="text-center p-3"><div class="spinner-border spinner-border-sm"></div><p>Searching for available flights...</p></div>`;
+        try {
+            const res = await fetch(`${backendUrl}/bookings/reschedule/search/${bookingId}/${newDate}`);
+            if (!res.ok) throw new Error('Could not find available flights for this route and date.');
+            const flights = await res.json();
+            
+            if (flights.length === 0) {
+                container.innerHTML = `<div class="alert alert-warning">No available flights found on this date. Please try another date.</div>`;
+                return;
+            }
+            
+            container.innerHTML = `<h5>Step 2: Select a New Flight</h5>` + 
+            flights.map(flight => `
+                <a href="#" class="list-group-item list-group-item-action available-flight-item p-3" data-instance-id="${flight.id}">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">Departure: ${new Date(flight.scheduled_departure).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</h6>
+                        <small>Arrival: ${new Date(flight.scheduled_arrival).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
+                    </div>
+                </a>
+            `).join('');
+        } catch(err) {
+            container.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+        }
+    }
+    
+    function showRescheduleConfirmation(newInstanceId) {
+        // In a real application, this data should come from a server API call
+        const rescheduleFee = 500;
+        const fareDifference = 200; // This is an example, could be positive or negative
+        const totalPayable = rescheduleFee + fareDifference;
+        
+        currentRescheduleData.newFlightInstanceId = newInstanceId;
+        currentRescheduleData.additionalAmount = totalPayable;
+
+        rescheduleModalBody.innerHTML = `
+            <h5>Step 3: Confirm and Pay</h5>
+            <p>Please review the charges for rescheduling your flight. Your original seats will be transferred to the new flight.</p>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Rescheduling Fee</span>
+                    <strong>₹${rescheduleFee.toFixed(2)}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Fare Difference</span>
+                    <strong>₹${fareDifference.toFixed(2)}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
+                    <span class="fw-bold">Total Amount Payable</span>
+                    <strong class="text-primary fs-5">₹${totalPayable.toFixed(2)}</strong>
+                </li>
+            </ul>
+        `;
+        confirmRescheduleBtn.classList.remove('d-none');
+    }
+
+    async function confirmReschedule() {
+        const { bookingId, newFlightInstanceId, additionalAmount } = currentRescheduleData;
+        confirmRescheduleBtn.disabled = true;
+        confirmRescheduleBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Confirming...`;
+
+        try {
+            const res = await fetch(`${backendUrl}/bookings/reschedule/confirm`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    originalBookingId: bookingId,
+                    newFlightInstanceId: newFlightInstanceId,
+                    additionalAmount: additionalAmount
+                })
+            });
+
+            if (!res.ok) {
+                const errData = await res.json();
+                throw new Error(errData.error || "Failed to confirm reschedule. Please try again.");
+            }
+            
+            alert('Booking has been successfully rescheduled!');
+            rescheduleModal.hide();
+            loadBookings();
+
+        } catch(err) {
+            // Show error inside the modal for better UX
+            rescheduleModalBody.innerHTML += `<div class="alert alert-danger mt-3">${err.message}</div>`;
+        } finally {
+            confirmRescheduleBtn.disabled = false;
+            confirmRescheduleBtn.innerHTML = `Confirm & Pay`;
+        }
+    }
+
+    // --- Event Listeners ---
+    currentTab.addEventListener("click", () => filterAndRenderBookings('current'));
+    pastTab.addEventListener("click", () => filterAndRenderBookings('past'));
+    applyFilterBtn.addEventListener("click", () => filterAndRenderBookings('date'));
+    clearFilterBtn.addEventListener("click", () => {
+        dateFilterInput.value = "";
+        filterAndRenderBookings('current');
+    });
+
+    bookingsContainer.addEventListener('click', (e) => {
+        const target = e.target.closest('button');
+        if (!target) return;
+        
+        if (target.classList.contains('btn-cancel')) {
+            handleCancelBooking(target.dataset.bookingId);
+        } else if (target.classList.contains('btn-reschedule')) {
+            handleRescheduleClick(target.dataset.bookingId);
+        }
+    });
+
+    rescheduleModalBody.addEventListener('click', e => {
+        e.preventDefault(); // Prevent default anchor tag behavior
+        if (e.target.id === 'findFlightsBtn') {
+            const newDate = document.getElementById('newDepartureDate').value;
+            if (newDate) {
+                findAvailableFlights(currentRescheduleData.bookingId, newDate);
+            } else {
+                alert('Please select a new date.');
+            }
+        }
+        
+        const flightItem = e.target.closest('.available-flight-item');
+        if (flightItem) {
+            showRescheduleConfirmation(flightItem.dataset.instanceId);
+        }
+    });
+    
+    confirmRescheduleBtn.addEventListener('click', confirmReschedule);
+});
+</script>
+</body>
+</html>
