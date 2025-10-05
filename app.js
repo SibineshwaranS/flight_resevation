@@ -81,6 +81,10 @@ cron.schedule("0 0 * * *", async () => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`🚀 Server running at http://localhost:${port}`);
+// app.js
+
+const PORT = process.env.PORT || 3000; // Use Render's port if available, otherwise fallback to 3000
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
