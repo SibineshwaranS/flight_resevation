@@ -8,7 +8,26 @@ const app = express();
 const port = 3000;
 
 
-app.use(cors());
+// This list defines which websites are allowed to connect to your API
+const allowedOrigins = [
+    'http://127.0.0.1:5500', // Your local machine for testing
+    // We will add your live Netlify URL here later
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or Postman)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from your origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    }
+}));
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
