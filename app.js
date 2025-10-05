@@ -11,7 +11,7 @@ const port = 3000;
 // This list defines which websites are allowed to connect to your API
 const allowedOrigins = [
     'http://127.0.0.1:5500', // Your local machine for testing
-    // We will add your live Netlify URL here later
+    'https://beautiful-bubblegum-d4c12f.netlify.app'
 ];
 
 app.use(cors({
