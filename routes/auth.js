@@ -4,8 +4,8 @@ const pool = require("../db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// 🔑 Secret for JWT (store in .env in real projects)
-const JWT_SECRET = "supersecretkey";
+// auth.js
+const JWT_SECRET = process.env.JWT_SECRET;
 
     // Generate JWT
     const maxAge = 3 * 24 * 60 * 60;
