@@ -240,7 +240,7 @@
         return;
       }
       try {
-        const res = await fetch(`http://localhost:3000/flightinstances/seatmap/${flightInstanceId}`);
+        const res = await fetch(`https://flight-reservation-api-xv04.onrender.com/flightinstances/seatmap/${flightInstanceId}`);
         if (!res.ok) {
             throw new Error(`Failed to fetch: ${res.statusText}`);
         }

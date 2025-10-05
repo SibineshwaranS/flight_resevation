@@ -271,12 +271,12 @@
 
   async function loadData() {
     try {
-        await fetch("http://localhost:3000/flightinstances/shift-expired");
+        await fetch("https://flight-reservation-api-xv04.onrender.com/flightinstances/shift-expired");
         
         const [instancesRes, flightsRes, routesRes] = await Promise.all([
-            fetch("http://localhost:3000/flightinstances/read"),
-            fetch("http://localhost:3000/flights/read"),
-            fetch("http://localhost:3000/routes/read")
+            fetch("https://flight-reservation-api-xv04.onrender.com/flightinstances/read"),
+            fetch("https://flight-reservation-api-xv04.onrender.com/flights/read"),
+            fetch("https://flight-reservation-api-xv04.onrender.com/routes/read")
         ]);
 
         if (!instancesRes.ok || !flightsRes.ok || !routesRes.ok) {
