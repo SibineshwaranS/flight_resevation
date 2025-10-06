@@ -271,12 +271,12 @@
 
   async function loadData() {
     try {
-        await fetch("https://flight-reservation-api-xv04.onrender.com/flightinstances/shift-expired");
+        await fetch("https://flight-resevation-api.onrender.com/flightinstances/shift-expired");
         
         const [instancesRes, flightsRes, routesRes] = await Promise.all([
-            fetch("https://flight-reservation-api-xv04.onrender.com/flightinstances/read"),
-            fetch("https://flight-reservation-api-xv04.onrender.com/flights/read"),
-            fetch("https://flight-reservation-api-xv04.onrender.com/routes/read")
+            fetch("https://flight-resevation-api.onrender.com/flightinstances/read"),
+            fetch("https://flight-resevation-api.onrender.com/flights/read"),
+            fetch("https://flight-resevation-api.onrender.com/routes/read")
         ]);
 
         if (!instancesRes.ok || !flightsRes.ok || !routesRes.ok) {
@@ -392,3 +392,4 @@
 </body>
 
 </html>
+
