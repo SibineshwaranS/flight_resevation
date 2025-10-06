@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FlightReserve – Flights</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --brand: #6f42c1;
+      --gradient: linear-gradient(135deg, #6f42c1, #a78bfa);
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --bg-soft: #f8f9fc;
+    }
+    body {
+      background-color: var(--bg-soft);
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+    }
+    header { margin-top: 70px; }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .navbar-brand {
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-link {
+      font-weight: 500;
+      color: #333 !important;
+      transition: 0.3s;
+    }
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--brand) !important;
+    }
+
+    .btn-account {
+      background: var(--gradient);
+      color: #fff !important;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: 0.3s;
+      box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+    }
+    .btn-account:hover {
+      background: linear-gradient(135deg, #5a32a3, #8b5cf6);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(111, 66, 193, 0.35);
+    }
+
+    /* Header */
+    header {
+      background: var(--gradient);
+      color: white;
+      padding: 3rem 1rem 4rem 1rem; /* Increased bottom padding */
+      text-align: center;
+      border-radius: 0 0 28px 28px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      position: relative;
+    }
+    header h2 {
+      font-weight: 700;
+      font-size: 2rem;
+      margin: 0;
+    }
+
+    /* ⭐ NEW: Search Form Container */
+    .search-form-container {
+      background: #fff;
+      padding: 1.5rem 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      margin-top: -2.5rem; /* Pulls it up over the header */
+      position: relative;
+      z-index: 10;
+    }
+    .search-form-container .form-label {
+        font-weight: 500;
+        color: var(--muted);
+    }
+    .btn-search {
+        background: var(--gradient);
+        color: white;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+    .btn-search:hover {
+        opacity: 0.9;
+        color: white;
+    }
+    
+    /* Flight cards */
+    .flight-card {
+      border-radius: 18px;
+      padding: 24px;
+      background: white;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      transition: transform 0.25s, box-shadow 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .flight-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    }
+    .route { font-size: 1.3rem; font-weight: 700; color: var(--brand); }
+    .flight-info { font-size: 0.95rem; color: #555; margin-top: 6px; }
+    .flight-info i { color: var(--brand); margin-right: 6px; }
+
+    /* Status tags */
+    .status-tag {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      padding: 0.4em 1.1em;
+      border-radius: 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-active { background: #28a745; color: white; }
+    
+    /* Book button */
+    .btn-book {
+      background: var(--gradient);
+      color: white;
+      font-weight: 500;
+      border-radius: 12px;
+      padding: 8px 18px;
+      transition: 0.2s;
+    }
+    .btn-book:hover {
+      opacity: 0.9;
+      color: white;
+    }
+
+    /* Footer */
+    footer {
+      background: #111827;
+      color: #cfd2e3;
+      text-align: center;
+      padding: 2rem 1rem;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/homepage.html">FlightReserve</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="nav" class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/homepage.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#">Flights</a></li>
+          <li class="nav-item"><a class="nav-link" href="homepage.html#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="homepage.html#help">Help</a></li>
+          <li class="nav-item"><a class="nav-link" href="homepage.html#contact">Contact</a></li>
+          <li class="nav-item dropdown">
+            <a class="btn-account dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle me-1"></i> Accounts
+            </a>
+            <ul id="accountDropdown" class="dropdown-menu dropdown-menu-end shadow"></ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header>
+    <h2>✈ Flight Schedule</h2>
+  </header>
+
+  <div class="container">
+    <div class="search-form-container">
+      <div class="row g-3 align-items-end">
+        <div class="col-lg-4">
+          <label for="fromInput" class="form-label">From</label>
+          <input id="fromInput" type="text" class="form-control" placeholder="Departure city">
+        </div>
+        <div class="col-lg-4">
+          <label for="toInput" class="form-label">To</label>
+          <input id="toInput" type="text" class="form-control" placeholder="Arrival city">
+        </div>
+        <div class="col-lg-2">
+          <button id="searchBtn" type="button" class="btn btn-search w-100">
+            <i class="bi bi-search me-1"></i> Search
+          </button>
+        </div>
+        <div class="col-lg-2">
+            <button id="clearBtn" type="button" class="btn btn-outline-secondary w-100">Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container my-5" id="flightsContainer">
+    <p class="text-center text-muted">Loading flights...</p>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 FlightReserve. All rights reserved.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // --- ACCOUNTS DROPDOWN LOGIC (UNCHANGED) ---
+  document.addEventListener("DOMContentLoaded", () => {
+    const dropdown = document.getElementById("accountDropdown");
+
+    function renderDropdown() {
+        const user = JSON.parse(localStorage.getItem("user"));
+        dropdown.innerHTML = "";
+
+        if (user) {
+            dropdown.innerHTML = `
+                <li class="dropdown-header">👋 Hi, ${user.username}</li>
+                <li><a class="dropdown-item" href="/userbookings.html"><i class="bi bi-journal-text me-2"></i>Bookings</a></li>
+                <li><a class="dropdown-item" href="/customerprofile.html"><i class="bi bi-person-lines-fill me-2"></i>Personal Info</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="#" id="logoutBtn"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+            `;
+            document.getElementById("logoutBtn").addEventListener("click", (e) => {
+                e.preventDefault();
+                localStorage.removeItem("user");
+                location.reload();
+            });
+        } else {
+            dropdown.innerHTML = `
+                <li><a class="dropdown-item" href="/login.html"><i class="bi bi-box-arrow-in-right me-2"></i>Sign In</a></li>
+                <li><a class="dropdown-item" href="/register.html"><i class="bi bi-person-plus me-2"></i>Sign Up</a></li>
+            `;
+        }
+    }
+    renderDropdown();
+  });
+
+  // --- FLIGHTS LIST LOGIC ---
+  const flightsContainer = document.getElementById("flightsContainer");
+  let upcomingFlightInstances = [];
+
+  function formatTime(dateObj) {
+    if (!dateObj) return "N/A";
+    return new Date(dateObj).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+
+  async function loadData() {
+    try {
+        await fetch("https://flight-reservation-api-xv04.onrender.com/flightinstances/shift-expired");
+        
+        const [instancesRes, flightsRes, routesRes] = await Promise.all([
+            fetch("https://flight-reservation-api-xv04.onrender.com/flightinstances/read"),
+            fetch("https://flight-reservation-api-xv04.onrender.com/flights/read"),
+            fetch("https://flight-reservation-api-xv04.onrender.com/routes/read")
+        ]);
+
+        if (!instancesRes.ok || !flightsRes.ok || !routesRes.ok) {
+            throw new Error("Failed to fetch flight data.");
+        }
+
+        const allInstances = await instancesRes.json();
+        const flightsData = await flightsRes.json();
+        const routesData = await routesRes.json();
+        
+        const combinedInstances = allInstances.map(fi => {
+            const flight = flightsData.find(f => f.id === fi.flight_id) || {};
+            const route = routesData.find(r => r.id === flight.route_id) || {};
+            return {
+                ...fi,
+                flight_number: flight.flight_number,
+                source_airport: route.source_airport,
+                destination_airport: route.destination_airport,
+                route: `${route.source_airport}→${route.destination_airport}`
+            };
+        });
+
+        const now = new Date();
+        upcomingFlightInstances = combinedInstances.filter(fi => {
+            const departureTime = new Date(fi.scheduled_departure);
+            return departureTime > now;
+        });
+        
+        renderFlights(upcomingFlightInstances);
+
+    } catch (err) {
+        console.error("❌ loadData error:", err.message);
+        flightsContainer.innerHTML = `<p class="text-center text-danger">Failed to load flights. Please try again later.</p>`;
+    }
+  }
+
+  function renderFlights(instancesToRender) {
+      flightsContainer.innerHTML = "";
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (instancesToRender.length === 0) {
+          const fromTerm = document.getElementById("fromInput").value;
+          const toTerm = document.getElementById("toInput").value;
+          const message = (fromTerm || toTerm)
+              ? `No upcoming flights match your search criteria.`
+              : "There are no upcoming flights available at this moment.";
+          flightsContainer.innerHTML = `<p class="text-center text-muted mt-4">${message}</p>`;
+          return;
+      }
+
+      instancesToRender.forEach(fi => {
+          const depDate = new Date(fi.scheduled_departure);
+          const arrDate = new Date(fi.scheduled_arrival);
+          const statusTag = `<span class="status-tag status-active"><i class="bi bi-check-circle"></i> Scheduled</span>`;
+          
+          const actionBtn = user
+              ? `<a href="userflightseat.html?instance_id=${fi.id}&route=${fi.route}" class="btn btn-book btn-sm mt-2">Book Now</a>`
+              : `<a href="login.html" class="btn btn-book btn-sm mt-2">Login to Book</a>`;
+
+          const card = `
+              <div class="flight-card">
+                  ${statusTag}
+                  <div class="d-flex justify-content-between align-items-center flex-wrap">
+                      <div>
+                          <div class="route">${fi.source_airport} → ${fi.destination_airport}</div>
+                          <div class="flight-info"><i class="bi bi-airplane-fill"></i> <strong>${fi.flight_number || 'N/A'}</strong></div>
+                          <div class="flight-info"><i class="bi bi-calendar-event"></i> Date: <strong>${depDate.toLocaleDateString('en-IN', {day: '2-digit', month: 'short', year: 'numeric'})}</strong></div>
+                          <div class="flight-info"><i class="bi bi-clock"></i> Departure: <strong>${formatTime(depDate)}</strong></div>
+                          <div class="flight-info"><i class="bi bi-clock-history"></i> Arrival: <strong>${formatTime(arrDate)}</strong></div>
+                      </div>
+                      <div class="text-end mt-3 mt-sm-0">
+                          ${actionBtn}
+                      </div>
+                  </div>
+              </div>
+          `;
+          flightsContainer.innerHTML += card;
+      });
+  }
+
+  // ⭐ NEW SEARCH LOGIC
+  document.getElementById("searchBtn").addEventListener("click", () => {
+    const fromTerm = document.getElementById("fromInput").value.toLowerCase().trim();
+    const toTerm = document.getElementById("toInput").value.toLowerCase().trim();
+
+    let filteredFlights = upcomingFlightInstances;
+
+    if (fromTerm) {
+      filteredFlights = filteredFlights.filter(fi => 
+        fi.source_airport.toLowerCase().includes(fromTerm)
+      );
+    }
+
+    if (toTerm) {
+      filteredFlights = filteredFlights.filter(fi => 
+        fi.destination_airport.toLowerCase().includes(toTerm)
+      );
+    }
+
+    renderFlights(filteredFlights);
+  });
+  
+  // ⭐ NEW CLEAR BUTTON LOGIC
+  document.getElementById("clearBtn").addEventListener("click", () => {
+    document.getElementById("fromInput").value = "";
+    document.getElementById("toInput").value = "";
+    renderFlights(upcomingFlightInstances); // Render the full list again
+  });
+  
+  loadData();
+</script>
+
+</body>
+</html>
