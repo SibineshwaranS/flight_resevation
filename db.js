@@ -3,12 +3,23 @@ require('dotenv').config(); // Loads environment variables from a .env file
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  // This tells the app to use the connection string from the environment variables
   connectionString: process.env.DATABASE_URL,
-  // This is required for connecting to cloud databases like Supabase from Render
   ssl: {
     rejectUnauthorized: false
   }
 });
+
+// Verification log
+console.log('Database pool created. Attempting test connection...');
+
+// Optional: Test the connection
+pool
+  .query('SELECT NOW()')
+  .then(res => {
+    console.log('Database connected successfully at:', res.rows[0].now);
+  })
+  .catch(err => {
+    console.error('Database connection error:', err);
+  });
 
 module.exports = pool;
