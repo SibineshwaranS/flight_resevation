@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (data.user.role === "admin") {
               window.location.href = "/admin.html";
             } else {
-              window.location.href = "/homepage.html";
+              window.location.href = "/index.html";
             }
           } else {
               if(globalError) {
@@ -201,3 +201,4 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+
